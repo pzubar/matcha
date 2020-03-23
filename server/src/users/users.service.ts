@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { query } from 'db'
 
-export type User = any;
+export type User = any
 
 @Injectable()
 export class UsersService {
