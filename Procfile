@@ -1,2 +1,2 @@
-web: npm run start:prod --prefix server/
-release: cd server && npm run migrate up
+web: npm run start:prod
+release: npm run migrate up
