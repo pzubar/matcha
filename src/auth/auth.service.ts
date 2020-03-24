@@ -19,23 +19,20 @@ export class AuthService {
     const salt = await bcrypt.genSalt(saltRounds)
     const hash = await bcrypt.hash(password, salt)
 
-    const id = await query(
+    await query(
       `
         INSERT INTO users(username, first_name, last_name, email, password)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id`,
+        VALUES ($1, $2, $3, $4, $5)`,
       [username, firstName, lastName, email, hash]
     )
-    return id
   }
 
-  async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username)
-    if (user && user.password === pass) {
-      const { password, ...result } = user
-      return result
-    }
-    return null
+  async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
+    const {rows} = await this.usersService.findOne(usernameOrEmail)
+    console.log("USER ::: ", rows)
+    const result = await bcrypt.compare(pass, rows.password)
+    console.log('RESULT ::: ', result)
+    if (result) return rows
   }
 
   async login(user: any) {

@@ -18,7 +18,6 @@ exports.up = pgm => {
           password    VARCHAR(255)                                 NOT NULL,
           gender      gender,
           birthday    DATE,
-          age         INT4,
           is_verified BOOLEAN            DEFAULT FALSE,
           biography   TEXT,
           orientation sexual_preferences DEFAULT 'bisexual',
