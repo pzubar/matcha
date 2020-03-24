@@ -3,11 +3,9 @@ import { UsersService } from '../users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import { CreateUserDto } from './dto/create-user-dto'
 import { query } from '../../db'
+import * as bcrypt from 'bcrypt'
 
 const saltRounds = 10
-const bcrypt = require('bcrypt');
-// const myPlaintextPassword = 's0//P4$$w0rD'
-// const someOtherPlaintextPassword = 'not_bacon'
 
 @Injectable()
 export class AuthService {

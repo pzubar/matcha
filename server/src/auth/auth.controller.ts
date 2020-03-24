@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user-dto'
 import { AuthService } from './auth.service'
 
@@ -10,5 +10,4 @@ export class AuthController {
   async create(@Body() createUserDto: CreateUserDto) {
     return this.authService.createUser(createUserDto)
   }
-
 }

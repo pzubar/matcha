@@ -18,4 +18,9 @@ export class AppController {
   getProfile(@Request() req) {
     return req.user
   }
+
+  @Get('/')
+  sayHello() {
+    return "Hello, world! It's a matcha project!"
+  }
 }

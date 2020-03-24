@@ -28,6 +28,5 @@ describe('AppController (e2e)', () => {
       .expect(201)
 
     console.log(result)
-    // .expect('Hello World!');
   })
 })
