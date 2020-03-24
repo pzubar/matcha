@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { query } from 'db'
+import { query } from '../../db'
 
 export type User = any
 
