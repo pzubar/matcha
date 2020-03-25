@@ -9,10 +9,14 @@ export class UsersService {
 
   constructor() {}
 
-  async findOne(username: string): Promise<User | undefined> {
-    // console.log()
-    return query(
-      `SELECT * FROM users WHERE email = $1 LIMIT 1`, [username]
+  async findOne(nameOrEmail: string): Promise<User | undefined> {
+    const result = await query(
+      `SELECT * FROM users WHERE email = $1 OR username = $1 LIMIT 1`,
+      [nameOrEmail]
     )
+    const { rows } = result
+    const [user] = rows
+
+    return user
   }
 }

@@ -39,15 +39,16 @@ describe('AppController (e2e)', () => {
         firstName: 'FirstName',
         lastName: 'Last Name',
         password: 'password',
-        email: `${randomString.generate(5)}@gmail.com´`
+        email: `${randomString.generate(5)}@gmail.com`
       })
       .expect(201)
 
     await request(app.getHttpServer())
       .post('/auth/login')
       .send({
-        username: 'john',
-        password: 'changeme'
+        username: 'u_test',
+        password: 'password'
       })
+      .expect(201)
   })
 })

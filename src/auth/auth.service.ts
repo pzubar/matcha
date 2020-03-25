@@ -28,15 +28,15 @@ export class AuthService {
   }
 
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
-    const {rows} = await this.usersService.findOne(usernameOrEmail)
-    console.log("USER ::: ", rows)
-    const result = await bcrypt.compare(pass, rows.password)
-    console.log('RESULT ::: ', result)
-    if (result) return rows
+    const user = await this.usersService.findOne(usernameOrEmail)
+    const result = await bcrypt.compare(pass, user.password)
+
+    if (result) return user
   }
 
   async login(user: any) {
-    const payload = { username: user.username, sub: user.userId }
+    const payload = { username: user.username, sub: user.id }
+
     return {
       access_token: this.jwtService.sign(payload)
     }
