@@ -1,22 +1,34 @@
-import { Module } from '@nestjs/common'
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod
+} from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
 import { AuthModule } from './auth/auth.module'
 import { UsersModule } from './users/users.module'
-import { GraphQLModule } from '@nestjs/graphql'
-import * as path from 'path'
+import { frontendMiddleware } from './middleware/frontend-middleware'
+import { ServeStaticModule } from '@nestjs/serve-static'
+import { join } from 'path'
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot({
-      autoSchemaFile: path.join(process.cwd(), 'src/schema.gql')
-    }),
     AuthModule,
-    UsersModule
+    UsersModule,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'build')
+    })
   ],
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(frontendMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL })
+  }
+}
