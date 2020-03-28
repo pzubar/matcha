@@ -11,8 +11,6 @@ $email->addContent("text/plain", "Just a sample piece of plain text. Nothing spe
 
 $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
 
-//$sendgrid = new \SendGrid('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');
-
 try {
     $response = $sendgrid->send($email);
     print $response->statusCode() . "\n";
