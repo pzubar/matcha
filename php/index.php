@@ -1,6 +1,5 @@
 <?php
-require("./sendgrid-php/sendgrid-php.php");
-
+require("./third-party/sendgrid-php/sendgrid-php.php");
 // JUST A SAMPLE FOR MAIL TESTING!
 
 $email = new \SendGrid\Mail\Mail();
