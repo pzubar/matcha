@@ -4,7 +4,7 @@ import { AuthService } from './auth.service'
 import * as requestIp from 'request-ip'
 import { LocalAuthGuard } from './local-auth.guard'
 
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
