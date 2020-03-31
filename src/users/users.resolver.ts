@@ -1,25 +1,17 @@
-import { Resolver, Query, ResolveField, Args, Int } from '@nestjs/graphql'
-// import { User } from './models/user.model'
+import { Resolver, Query, Args, Int } from '@nestjs/graphql'
+import { User } from './models/user.model'
 
-@Resolver('User')
-export class AuthorsResolver {
-  constructor() // private authorsService: AuthorsService,
-  // private postsService: PostsService
-  {}
+@Resolver(of => User)
+export class UsersResolver {
+  constructor() {}
 
-  @Query('authors')
-  async getAuthors() {
-    return [{ id: 123, firstName: 'Ivan', lastName: 'Petrov' }]
-  }
-
-  @Query('author')
-  async getUser(@Args('id', { type: () => Int }) id: number) {
+  @Query(returns => User)
+  async user(@Args('id', { type: () => Int }) id: number): Promise<User> {
     return { id: 123, firstName: 'Ivan', lastName: 'Petrov' }
   }
 
-  // @ResolveField()
-  // async posts(@Parent() author: Author) {
-  //   const { id } = author
-  //   return this.postsService.findAll({ authorId: id })
-  // }
+  @Query(returns => [User])
+  async users() {
+    return [{ id: 123, firstName: 'Ivan', lastName: 'Petrov' }]
+  }
 }
