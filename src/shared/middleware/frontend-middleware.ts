@@ -10,5 +10,5 @@ export function frontendMiddleware(req: Request, res, next) {
     return next()
   }
 
-  res.sendFile(join(__dirname, '../../build/index.html'))
+  res.sendFile(join(__dirname, '../../../build/index.html'))
 }
