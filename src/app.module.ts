@@ -19,7 +19,10 @@ import { join } from 'path'
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.graphql'),
-      context: ({ req }) => ({ req })
+      context: ({ req }) => ({ req }),
+      formatError({ message }) {
+        return new Error(message)
+      }
     })
   ],
   controllers: [AppController],

@@ -19,4 +19,16 @@ export class UsersService {
 
     return user
   }
+
+  async checkIfUserAlreadyExists(
+    username: string,
+    email: string
+  ): Promise<boolean> {
+    const result = await query(
+      `SELECT * FROM users WHERE username = $1 OR email = $2 LIMIT 1`,
+      [username, email]
+    )
+
+    return !!result?.rows?.length
+  }
 }
