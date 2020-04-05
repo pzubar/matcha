@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common'
 import { query } from '../../db'
+import { QueryResult } from 'pg'
 
-export type User = any
+export interface User {
+  username: string
+  distance?: number
+}
 
 @Injectable()
 export class UsersService {
@@ -11,7 +15,11 @@ export class UsersService {
 
   async findOne(nameOrEmail: string): Promise<User | undefined> {
     const result = await query(
-      `SELECT * FROM users WHERE email = $1 OR username = $1 LIMIT 1`,
+      `SELECT *
+         FROM users
+         WHERE email = $1
+            OR username = $1
+         LIMIT 1`,
       [nameOrEmail]
     )
     const { rows } = result
@@ -25,10 +33,46 @@ export class UsersService {
     email: string
   ): Promise<boolean> {
     const result = await query(
-      `SELECT * FROM users WHERE username = $1 OR email = $2 LIMIT 1`,
+      `SELECT *
+         FROM users
+         WHERE username = $1
+            OR email = $2
+         LIMIT 1`,
       [username, email]
     )
 
     return !!result?.rows?.length
+  }
+
+  // In spatial databases spatial coordinates are in x = longitude, and y = latitude.
+  async updateUserLocation(
+    userId: string,
+    long: number,
+    lat: number
+  ): Promise<QueryResult<any>> {
+    return query(`
+        UPDATE users
+        SET location='POINT(' || $1 || ', ' || $2 || ')'::geography
+        WHERE id = $3
+    `)
+  }
+
+  async getNearestUsers(userId, limit = 50): Promise<Array<User>> {
+    const result = await query(
+      `
+                SELECT first_name,
+                       ST_Distance(
+                               location,
+                               (SELECT location FROM users WHERE id = $1)
+                           ) AS distance
+                FROM users
+                ORDER BY location <->
+                         (SELECT location FROM users WHERE id = $1)
+                LIMIT $2;
+      `,
+      [userId, limit]
+    )
+    const { rows } = result
+    return rows
   }
 }
