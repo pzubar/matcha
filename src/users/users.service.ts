@@ -3,6 +3,8 @@ import { query } from '../../db'
 import { QueryResult } from 'pg'
 
 export interface User {
+  password: string
+  email: string
   username: string
   distance?: number
 }
@@ -49,12 +51,15 @@ export class UsersService {
     userId: string,
     long: number,
     lat: number
-  ): Promise<QueryResult<any>> {
-    return query(`
-        UPDATE users
-        SET location='POINT(' || $1 || ', ' || $2 || ')'::geography
-        WHERE id = $3
-    `)
+  ): Promise<QueryResult> {
+    return query(
+      `
+                UPDATE users
+                SET location='POINT(' || $1 || ', ' || $2 || ')'::geography
+                WHERE id = $3
+      `,
+      [userId, long, lat]
+    )
   }
 
   async getNearestUsers(userId, limit = 50): Promise<Array<User>> {
@@ -66,8 +71,7 @@ export class UsersService {
                                (SELECT location FROM users WHERE id = $1)
                            ) AS distance
                 FROM users
-                ORDER BY location <->
-                         (SELECT location FROM users WHERE id = $1)
+                ORDER BY distance
                 LIMIT $2;
       `,
       [userId, limit]
