@@ -10,7 +10,7 @@ import Container from '@material-ui/core/Container'
 import { useForm } from 'react-hook-form'
 import { useStyles } from './styles'
 import { useMutation } from '@apollo/client'
-import { SIGN_UP } from './mutations/sign-up'
+import { SIGN_UP } from '../../api/mutations/sign-up'
 
 const SignUp = () => {
   const classes = useStyles()
@@ -18,17 +18,16 @@ const SignUp = () => {
 
   const [signup, { data, error, loading }] = useMutation(SIGN_UP)
 
-  const onSubmit = (data) => {
-    debugger
-    signup({ variables: data }).then(a => {
-      debugger
+  const onSubmit = input => {
+    signup({ variables: { input } }).then(a => {
+      reset()
     })
-    reset()
   }
 
   return (
     <Container component="main" maxWidth="xs">
       {loading && 'Loading...'}
+      {data && 'Success!'}
       {error && error.toString()}
       <CssBaseline />
       <div className={classes.paper}>
