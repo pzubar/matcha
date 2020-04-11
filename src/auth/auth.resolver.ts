@@ -7,7 +7,7 @@ import { AuthService } from './auth.service'
 import { LoginInputData, LoginResponse } from './models/login.model'
 import { GqlLocalAuthGuard } from './guards/gql-local-auth.guard'
 import { SignUpUserData } from './models/sign-up-user-model'
-import { error, isError } from '../shared/types'
+import { isError } from '../shared/types'
 
 @Resolver(of => Auth)
 export class AuthResolver {
