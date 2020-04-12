@@ -12,7 +12,7 @@ type LoginResponse {
 }
 
 type Mutation {
-  signUp(signUpUserData: SignUpUserData!): Boolean!
+  signUp(signUpUserData: SignUpUserData!): LoginResponse!
   login(loginInputData: LoginInputData!): LoginResponse!
 }
 

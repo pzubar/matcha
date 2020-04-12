@@ -17,7 +17,7 @@ export class AuthService {
 
   async createUser(
     createUserDto: SignUpUserData
-  ): Promise<Either<boolean, Error>> {
+  ): Promise<Either<string, Error>> {
     const { username, email, password, firstName, lastName } = createUserDto
     const salt = await bcrypt.genSalt(saltRounds)
     const hash = await bcrypt.hash(password, salt)
@@ -25,13 +25,16 @@ export class AuthService {
     if (await this.usersService.checkIfUserAlreadyExists(username, email)) {
       return error(new Error('User with such username or email already exists'))
     }
-    await query(
+    const { rows } = await query(
       `
         INSERT INTO users(username, first_name, last_name, email, password)
-        VALUES ($1, $2, $3, $4, $5)`,
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING id`,
       [username, firstName, lastName, email, hash]
     )
-    return true
+    const [{ id }] = rows
+    console.log('USER ::: ', id);
+    return id
   }
 
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {

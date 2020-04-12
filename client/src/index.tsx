@@ -5,29 +5,38 @@ import {
   ApolloClient,
   HttpLink,
   InMemoryCache,
-  ApolloProvider
+  ApolloProvider,
+  gql
 } from '@apollo/client'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './index.css'
+import App from './App'
 
-const SignUp = lazy(() => import('./routes/signup'))
-
+const cache = new InMemoryCache()
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache,
   link: new HttpLink({
     uri: 'http://localhost:8000/graphql'
-  })
+  }),
+  resolvers: {}
+})
+
+export const IS_LOGGED_IN = gql`
+  query IsUserLoggedIn {
+    isLoggedIn @client
+  }
+`
+
+cache.writeQuery({
+  query: IS_LOGGED_IN,
+  data: {
+    isLoggedIn: !!localStorage.getItem('token')
+  }
 })
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Router>
-      <Suspense fallback={<div>Завантаження...</div>}>
-        <Switch>
-          <Route exact path="/" component={SignUp} />
-        </Switch>
-      </Suspense>
-    </Router>
+    <App />
   </ApolloProvider>,
   document.getElementById('root')
 )

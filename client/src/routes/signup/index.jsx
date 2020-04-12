@@ -9,17 +9,20 @@ import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 import { useForm } from 'react-hook-form'
 import { useStyles } from './styles'
-import { useMutation } from '@apollo/client'
+import { useMutation, useApolloClient } from '@apollo/client'
 import { SIGN_UP } from '../../api/mutations/sign-up'
 
 const SignUp = () => {
   const classes = useStyles()
   const { register, handleSubmit, reset } = useForm()
-
+  const client = useApolloClient()
   const [signup, { data, error, loading }] = useMutation(SIGN_UP)
 
   const onSubmit = input => {
-    signup({ variables: { input } }).then(a => {
+    signup({ variables: { input } }).then(data => {
+      debugger
+      client.writeData({ data: { isLoggedIn: true } })
+      localStorage.setItem('token', data.token)
       reset()
     })
   }
