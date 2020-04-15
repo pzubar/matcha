@@ -10,21 +10,24 @@ import Container from '@material-ui/core/Container'
 import { useForm } from 'react-hook-form'
 import { useStyles } from './styles'
 import { useMutation, useApolloClient } from '@apollo/client'
-import { SIGN_UP } from '../../api/mutations/sign-up'
+import { SIGN_UP } from './graphql/mutations'
+import { IS_LOGGED } from '../shared/graphql/queries/is-logged-in'
 
-const SignUp = () => {
+const SignUp = ({ navigateToLogin }) => {
   const classes = useStyles()
-  const { register, handleSubmit, reset } = useForm()
+  const { register, handleSubmit } = useForm()
   const client = useApolloClient()
-  const [signup, { data, error, loading }] = useMutation(SIGN_UP)
+  const [signUp, { data, error, loading }] = useMutation(SIGN_UP)
 
-  const onSubmit = input => {
-    signup({ variables: { input } }).then(data => {
-      debugger
-      client.writeData({ data: { isLoggedIn: true } })
-      localStorage.setItem('token', data.token)
-      reset()
-    })
+  const onSubmit = async (input: Record<string, string>) => {
+    const data = await signUp({ variables: { input } })
+
+    if (data.signUp) {
+      const { token } = data.signUp
+
+      client.writeQuery({ query: IS_LOGGED, data: { isLoggedIn: true } })
+      localStorage.setItem('token', token)
+    }
   }
 
   return (
@@ -117,7 +120,7 @@ const SignUp = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link variant="body2" onClick={navigateToLogin}>
                 Already have an account? Sign in
               </Link>
             </Grid>

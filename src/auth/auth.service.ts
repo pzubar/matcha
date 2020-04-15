@@ -33,12 +33,17 @@ export class AuthService {
       [username, firstName, lastName, email, hash]
     )
     const [{ id }] = rows
-    console.log('USER ::: ', id);
+    console.log('USER ::: ', id)
     return id
   }
 
   async validateUser(usernameOrEmail: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(usernameOrEmail)
+
+    // TODO: Do not throw ERROR here?
+    if (!user) {
+      throw new Error('No user with such email or password!')
+    }
     const result = await bcrypt.compare(pass, user.password)
 
     if (result) return user

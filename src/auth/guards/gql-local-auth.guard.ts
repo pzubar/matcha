@@ -9,10 +9,10 @@ import { LoginInputData } from '../models/login.model'
 export class GqlLocalAuthGuard extends LocalAuthGuard {
   getRequest(context: ExecutionContext) {
     const ctx = GqlExecutionContext.create(context)
-    const { loginOrEmail, password } = ctx.getContext().req.body
+    const { usernameOrEmail, password } = ctx.getContext().req.body
       .variables.input as LoginInputData
 
-    ctx.getContext().req.body = { username: loginOrEmail, password }
+    ctx.getContext().req.body = { username: usernameOrEmail, password }
 
     return ctx.getContext().req
   }

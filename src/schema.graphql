@@ -3,7 +3,7 @@
 # ------------------------------------------------------
 
 input LoginInputData {
-  loginOrEmail: String!
+  usernameOrEmail: String!
   password: String!
 }
 

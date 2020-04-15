@@ -1,34 +1,29 @@
-import React, { Suspense, lazy } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import * as serviceWorker from './serviceWorker'
 import {
   ApolloClient,
   HttpLink,
   InMemoryCache,
-  ApolloProvider,
-  gql
+  ApolloProvider
 } from '@apollo/client'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import './index.css'
 import App from './App'
+import { IS_LOGGED } from './shared/graphql/queries/is-logged-in'
+import { typeDefs, resolvers } from './shared/graphql'
 
 const cache = new InMemoryCache()
-const client = new ApolloClient({
+const client= new ApolloClient({
   cache,
   link: new HttpLink({
     uri: 'http://localhost:8000/graphql'
   }),
-  resolvers: {}
+  resolvers,
+  typeDefs
 })
 
-export const IS_LOGGED_IN = gql`
-  query IsUserLoggedIn {
-    isLoggedIn @client
-  }
-`
-
 cache.writeQuery({
-  query: IS_LOGGED_IN,
+  query: IS_LOGGED,
   data: {
     isLoggedIn: !!localStorage.getItem('token')
   }

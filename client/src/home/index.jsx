@@ -1,6 +1,7 @@
 import React from 'react'
 import Container from '@material-ui/core/Container'
 import { useApolloClient } from '@apollo/client'
+import { IS_LOGGED } from '../shared/graphql/queries/is-logged-in'
 
 const Home = () => {
   const client = useApolloClient()
@@ -9,7 +10,7 @@ const Home = () => {
       Welcome Home!
       <button
         onClick={() => {
-          client.writeData({ data: { isLoggedIn: false } })
+          client.writeQuery({ query: IS_LOGGED, data: { isLoggedIn: false } })
           localStorage.clear()
         }}
       >
