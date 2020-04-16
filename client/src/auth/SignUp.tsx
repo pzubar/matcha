@@ -28,7 +28,7 @@ const SignUp = ({ onSuccess }: LoginSignUpProps) => {
 
   useEffect(() => {
     if (data?.signUp) {
-      onSuccess(data?.login.token)
+      onSuccess(data?.signUp.token)
     }
   }, [data, onSuccess])
 
