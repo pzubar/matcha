@@ -8,7 +8,7 @@ include './templates.php';
  * or for a new account confirmation
  */
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && $_REQUEST ["event"] == 1) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $postData = file_get_contents('php://input');
     $data = json_decode($postData, true);
@@ -26,25 +26,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $_REQUEST ["event"] == 1) {
 
     function mailDispatcher($userid, $event, $userData) {
         switch ($event) {
-            case "Like":
+            case "like":
                 $msgDetails = likeTemplate($userData["login"]);
                 break;
-            case "Check":
+            case "check":
                 $msgDetails = checkTemplate($userData["login"]);
                 break;
-            case "Message":
+            case "message":
                 $msgDetails = newMessageTemplate($userData["login"]);
                 break;
-            case "Mutual":
+            case "mutual":
                 $msgDetails = mutualTemplate($userData["login"]);
                 break;
-            case "Dislike":
+            case "dislike":
                 $msgDetails = dislikeTemplate($userData["login"]);
                 break;
-            case "Forgotten":
+            case "forgotten":
                 $msgDetails = sendPasswordTemplate($userid, $userData);
                 break;
-            case "Signup":
+            case "signup":
                 $msgDetails = signupTemplate($userid, $userData);
                 break;
             default:

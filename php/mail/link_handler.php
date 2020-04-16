@@ -43,9 +43,9 @@ function handleLink($event, $id, $userData, $mode="encrypt") {
 
  if ($mode === "encrypt") {
      $getRequestPart = doHybridEncryption($keyAndMethod, $target, $id);
-     if ($event == "Signup" && !empty($event)) {
+     if ($event == "signup" && !empty($event)) {
          $result = "http://localhost:8100/mail/query.php?verify=" . $getRequestPart;
-     } elseif ($event == "Forgotten" && !empty($event)) {
+     } elseif ($event == "forgotten" && !empty($event)) {
          $result = "http://localhost:8100/mail/query.php?recover=" . $getRequestPart;
      } else {
          header("HTTP/1.1 422 Unprocessable Entity."); // Send when a request contains no expected input

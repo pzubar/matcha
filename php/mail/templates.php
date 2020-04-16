@@ -6,7 +6,7 @@ include './link_handler.php';
  * A new account confirmation & a forgotten password recovery
  */
 function signupTemplate($userid, $userData) {
-    $rl =  handleLink("Signup", $userid, $userData);
+    $rl =  handleLink("signup", $userid, $userData);
     echo $rl;
     $msg = "Dear " . ucfirst($userData["login"]) . ",\nTo verify your account on Matcha".
         " please follow this link:\r\n" . $rl;
@@ -19,7 +19,7 @@ function signupTemplate($userid, $userData) {
 
 function sendPasswordTemplate ($userid, $userData) {
     $msg = "Dear " . ucfirst($userData["login"]) . ",\nTo recover your password from Matcha".
-        " please follow this link:\r\n" . handleLink("Forgotten", $userid, $userData);
+        " please follow this link:\r\n" . handleLink("forgotten", $userid, $userData);
 
     return [
         "title" => "Recover your password on Matcha",
