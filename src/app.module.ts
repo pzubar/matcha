@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
+import { MessagesModule } from './messages/messages.module';
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { join } from 'path'
       formatError({ message }) {
         return new Error(message)
       }
-    })
+    }),
+    MessagesModule
   ],
   controllers: [AppController],
   providers: [AppService]
