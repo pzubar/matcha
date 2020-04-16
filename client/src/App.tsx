@@ -14,6 +14,7 @@ function App() {
       <Suspense fallback={<div>Loading...</div>}>
         <Switch>
           <Route exact path="/" component={data.isLoggedIn ? Home : Auth} />
+          <Route path={['/login', '/sign-up']} component={Auth} />
         </Switch>
       </Suspense>
     </Router>
