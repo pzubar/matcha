@@ -7,7 +7,7 @@ function error($code, $txt) {
 function verifyNewAccount($id) {
     try {
         $sqlQuery = "UPDATE users SET is_verified = true WHERE id = :id AND is_verified = false";
-        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db;user=postgres;password=');
+        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db');
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $qres = $dbh->prepare($sqlQuery);
         $qres->bindParam(':id',$id);
@@ -22,7 +22,7 @@ function verifyNewAccount($id) {
 function getUserData($id) {
     try {
         $sqlQuery = "SELECT * FROM users WHERE id = :id";
-        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db;user=postgres;password=');
+        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db');
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $qres = $dbh->prepare($sqlQuery);
         $qres->bindParam(':id',$id);

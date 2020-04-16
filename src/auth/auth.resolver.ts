@@ -7,6 +7,7 @@ import { LoginInputData, LoginResponse } from './models/login.model'
 import { GqlLocalAuthGuard } from './guards/gql-local-auth.guard'
 import { SignUpUserData } from './models/sign-up-user-model'
 import { isError } from '../shared/types'
+import * as http from 'http'
 
 @Resolver(of => LoginResponse)
 export class AuthResolver {
@@ -23,6 +24,9 @@ export class AuthResolver {
       username: signUpUserData.username,
       id: result
     })
+
+
+
     console.log('RESULT! ::: ', { token })
     return { token }
   }
