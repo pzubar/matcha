@@ -7,7 +7,7 @@ import { LoginInputData, LoginResponse } from './models/login.model'
 import { GqlLocalAuthGuard } from './guards/gql-local-auth.guard'
 import { SignUpUserData } from './models/sign-up-user-model'
 import { isError } from '../shared/types'
-import * as http from 'http'
+import fetch from 'node-fetch'
 
 @Resolver(of => LoginResponse)
 export class AuthResolver {
@@ -25,9 +25,20 @@ export class AuthResolver {
       id: result
     })
 
+    const data = JSON.stringify({
+      userid: result,
+      event: 'signup',
+      data: ''
+    })
 
+    fetch('http://127.0.0.1:8100/mail/query.php', {
+      method: 'post',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then(() => console.log('Mail send to user with id', result))
+      .catch(error => console.log('Mail send failed: ', error))
 
-    console.log('RESULT! ::: ', { token })
     return { token }
   }
 
