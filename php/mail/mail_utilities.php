@@ -1,18 +1,15 @@
 <?php
-function error($code, $txt) {
-    echo "Critical error " . $code . " - " . $txt;
-    return $code;
-}
+include_once '../db_connect.php';
+include_once '../general_utilities.php';
 
 function verifyNewAccount($id) {
     try {
         $sqlQuery = "UPDATE users SET is_verified = true WHERE id = :id AND is_verified = false";
-        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db');
+        $dbh = connectToDatabase();
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $qres = $dbh->prepare($sqlQuery);
         $qres->bindParam(':id',$id);
         $qres->execute();
-        //$qres = $qres->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $msg) {
         error(5.03, $msg->getMessage());
         die();
@@ -20,9 +17,10 @@ function verifyNewAccount($id) {
 }
 
 function getUserData($id) {
+
     try {
         $sqlQuery = "SELECT * FROM users WHERE id = :id";
-        $dbh = new PDO('pgsql:host=localhost;port=5432;dbname=matcha_db');
+        $dbh = connectToDatabase();
         $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $qres = $dbh->prepare($sqlQuery);
         $qres->bindParam(':id',$id);
@@ -41,16 +39,16 @@ function getUserData($id) {
 
 function getIdTimeLock($str) {
     $firstPcnt = strpos($str, "%");
-
-    $userid = base64_decode(substr($str, 0, $firstPcnt));
-
+    $userId = base64_decode(substr($str, 0, $firstPcnt));
     $str = rawurldecode(substr($str, $firstPcnt + 1));
+
     $lastPcnt = strrpos($str, "%");
     $sent = base64_decode(substr($str, $lastPcnt));
+
     $lock = substr($str, 0, $lastPcnt);
 
     return [
-        "userid" => $userid,
+        "userId" => $userId,
         "lock" => $lock,
         "sent" => $sent,
     ];
