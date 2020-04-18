@@ -14,3 +14,7 @@ export interface LoginInputData {
 export interface LoginResponse {
   token: string
 }
+
+export interface LoginSignUpProps {
+  onSuccess: (token: string) => void
+}
