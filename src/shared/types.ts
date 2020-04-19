@@ -10,3 +10,5 @@ export const isError = (arg: unknown): arg is Right =>
   (arg as Right).error !== undefined
 
 export type Either<T, E extends Error> = T | Right
+
+export type Id = number

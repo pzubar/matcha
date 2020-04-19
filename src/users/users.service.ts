@@ -1,33 +1,17 @@
 import { Injectable } from '@nestjs/common'
-import { query } from '../../db'
 import { QueryResult } from 'pg'
-
-export interface User {
-  password: string
-  email: string
-  username: string
-  distance?: number
-}
+import { query } from '@db'
+import { Either } from '@shared/types'
+import UserModel, { User } from './model'
 
 @Injectable()
 export class UsersService {
-  private readonly users: User[]
-
-  constructor() {}
-
-  async findOne(nameOrEmail: string): Promise<User | undefined> {
-    const result = await query(
-      `SELECT *
-         FROM users
-         WHERE email = $1
-            OR username = $1
-         LIMIT 1`,
-      [nameOrEmail]
-    )
-    const { rows } = result
-    const [user] = rows
-
-    return user
+  async findOne(nameOrEmail: string): Promise<Either<User, Error>> {
+    try {
+      return await UserModel.findByUserNameOrEmail(nameOrEmail)
+    } catch (e) {
+      return e
+    }
   }
 
   async checkIfUserAlreadyExists(
@@ -80,3 +64,4 @@ export class UsersService {
     return rows
   }
 }
+

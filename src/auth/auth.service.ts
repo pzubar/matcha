@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common'
 import { UsersService } from '../users/users.service'
 import { JwtService } from '@nestjs/jwt'
 import { SignUpUserData } from './models/sign-up-user-model'
-import { query } from '../../db'
+import { query } from '../db'
 import * as bcrypt from 'bcrypt'
-import { Either, error } from '../shared/types'
+import { Either, error, isError } from '../shared/types'
 
 const saltRounds = 10
 
@@ -41,8 +41,8 @@ export class AuthService {
     const user = await this.usersService.findOne(usernameOrEmail)
 
     // TODO: Do not throw ERROR here?
-    if (!user) {
-      throw new Error('No user with such email or password!')
+    if (isError(user)) {
+      return new Error('No user with such email or password!')
     }
     const result = await bcrypt.compare(pass, user.password)
 

@@ -1,9 +1,11 @@
+import { Database } from '@db'
+
 export default class Model<T> {
-  private table: string
+  protected table: string
 
-  private database: any
+  protected database: Database<T>
 
-  constructor(table, database) {
+  constructor(database, table) {
     this.table = table
     this.database = database
   }
@@ -25,10 +27,13 @@ export default class Model<T> {
   }
 
   findById(id) {
-    return this.database(this.table)
-      .where({ id })
-      .select()
-      .first()
+    return (
+      this.database(this.table)
+        // @ts-ignore
+        .where({ id })
+        .select()
+        .first()
+    )
   }
 
   insert(values) {
