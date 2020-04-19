@@ -3,7 +3,7 @@ import { AppModule } from './app.module'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import * as requestIp from 'request-ip'
 import * as path from 'path'
-import { HttpExceptionFilter } from './shared/filters/not-found-exception.filter'
+import { HttpExceptionFilter } from '@shared/filters/not-found-exception.filter'
 
 async function bootstrap() {
   const port = process.env.PORT || 8000
