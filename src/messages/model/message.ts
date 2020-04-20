@@ -1,8 +1,11 @@
 import { Model } from '@shared/model'
+import { Inject } from '@nestjs/common'
+import { DATABASE_CONNECTION } from '@shared/constants'
+import { Database } from '@db'
 import { Message } from './message.object-type'
 
 class MessageModel extends Model<Message> {
-  constructor(database) {
+  constructor(@Inject(DATABASE_CONNECTION) database: Database<Message>) {
     super(database, 'message')
   }
 

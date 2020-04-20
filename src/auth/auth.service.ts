@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { UsersService } from '../users/users.service'
 import { JwtService } from '@nestjs/jwt'
-import { SignUpUserData } from './models/sign-up-user-model'
-import { query } from '../db'
 import * as bcrypt from 'bcrypt'
-import { Either, error, isError } from '../shared/types'
+import { query } from '@db'
+import { Either, error, isError } from '@shared/types'
+import { UsersService } from '../users/users.service'
+import { SignUpUserData } from './models/sign-up-user-model'
 
 const saltRounds = 10
 
@@ -33,7 +33,6 @@ export class AuthService {
       [username, firstName, lastName, email, hash]
     )
     const [{ id }] = rows
-    console.log('USER ::: ', id)
     return id
   }
 
@@ -41,19 +40,18 @@ export class AuthService {
     const user = await this.usersService.findOne(usernameOrEmail)
 
     // TODO: Do not throw ERROR here?
-    if (isError(user)) {
+    if (isError(user) || !(await bcrypt.compare(pass, user.password))) {
       return new Error('No user with such email or password!')
     }
-    const result = await bcrypt.compare(pass, user.password)
 
-    if (result) return user
+    return user
   }
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.id }
 
     return {
-      access_token: this.jwtService.sign(payload)
+      accessToken: this.jwtService.sign(payload)
     }
   }
 }

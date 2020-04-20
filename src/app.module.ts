@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
 import { ConfigModule } from '@nestjs/config'
-import { AuthModule } from './auth/auth.module'
-import { UsersModule } from './users/users.module'
 import { ServeStaticModule } from '@nestjs/serve-static'
 import { GraphQLModule } from '@nestjs/graphql'
 import { join } from 'path'
-import { MessagesModule } from './messages/messages.module';
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { AuthModule } from './auth/auth.module'
+import { UsersModule } from './users/users.module'
+import { MessagesModule } from './messages/messages.module'
+import { DatabaseModule } from './db/database.module'
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { MessagesModule } from './messages/messages.module';
     AuthModule,
     UsersModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '/../build')
+      rootPath: join(__dirname, '/build'),
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.graphql'),
@@ -24,10 +25,10 @@ import { MessagesModule } from './messages/messages.module';
         return new Error(message)
       }
     }),
-    MessagesModule
+    MessagesModule,
+    DatabaseModule
   ],
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {
-}
+export class AppModule {}

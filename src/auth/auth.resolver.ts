@@ -20,7 +20,7 @@ export class AuthResolver {
     if (isError(result)) {
       throw result.error
     }
-    const { access_token: token } = await this.authService.login({
+    const { accessToken: token } = await this.authService.login({
       username: signUpUserData.username,
       id: result
     })
@@ -48,7 +48,7 @@ export class AuthResolver {
     @CurrentUser() user: User,
     @Args('loginInputData') loginInputData: LoginInputData
   ) {
-    const { access_token: token } = await this.authService.login(user)
+    const { accessToken: token } = await this.authService.login(user)
 
     return { token }
   }

@@ -1,4 +1,2 @@
-import database from '@db'
-import MessageModel from './message'
-
-export default new MessageModel(database)
+export { Message } from './message.object-type'
+export { default as MessageModel } from './message'

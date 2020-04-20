@@ -1,11 +1,13 @@
 import { Model } from '@shared/model'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
+import { Database } from '@db'
+import { DATABASE_CONNECTION } from '@shared/constants'
 import User from './user.object-type'
-import { Message } from '../../messages/model/message.object-type'
+import { Message } from '../../messages/model'
 
 @Injectable()
 class UserModel extends Model<User> {
-  constructor(database) {
+  constructor(@Inject(DATABASE_CONNECTION) database: Database<User>) {
     super(database, 'users')
   }
 

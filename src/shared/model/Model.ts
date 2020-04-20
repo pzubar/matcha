@@ -29,6 +29,7 @@ export default class Model<T> {
   findById(id) {
     return (
       this.database(this.table)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         .where({ id })
         .select()
