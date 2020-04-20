@@ -1,8 +1,8 @@
 import { Resolver, Query, Args, Int } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
+import { CurrentUser } from '@shared/decorators/gql-current-user'
 import { User } from './model'
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard'
-import { CurrentUser } from '../shared/decorators/gql-current-user'
 
 @Resolver(of => User)
 export class UsersResolver {

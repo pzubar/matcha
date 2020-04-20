@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject } from '@nestjs/common'
 import { QueryResult } from 'pg'
 import { query } from '@db'
 import { Either } from '@shared/types'
+import { USER_MODEL } from '@shared/constants'
 import UserModel, { User } from './model'
 
 @Injectable()
 export class UsersService {
+  constructor(private userModel: UserModel) {}
+
   async findOne(nameOrEmail: string): Promise<Either<User, Error>> {
     try {
-      return await UserModel.findByUserNameOrEmail(nameOrEmail)
+      return await this.userModel.findByUserNameOrEmail(nameOrEmail)
     } catch (e) {
       return e
     }
@@ -64,4 +67,3 @@ export class UsersService {
     return rows
   }
 }
-

@@ -17,9 +17,11 @@ export const query = async (text: string | QueryConfig, values?: any) => {
 
 export type Database<T> = Knex<T>
 
-const database = Knex({
+console.log("process.env.DATABASE_URL_LOCAL", process.env.DATABASE_URL_LOCAL)
+
+const database = (connection) => Knex({
   client: 'pg',
-  connection: process.env.DATABASE_URL_LOCAL,
+  connection,
   searchPath: ['knex', 'public']
 })
 
