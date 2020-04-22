@@ -66,3 +66,4 @@ function handleLink($event, $id, $userData, $mode="encrypt") {
  }
  return $result;
 }
+
