@@ -1,6 +1,7 @@
 <?php
-include "./utilities.php";
+include "./mail_utilities.php";
 include './templates.php';
+include_once '../general_utilities.php';
 
 /*
  * POST requests are used for sending emails &
@@ -13,18 +14,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $postData = file_get_contents('php://input');
     $data = json_decode($postData, true);
 
-    $userid = ($data["userid"]);
+    $userId = ($data["userId"]);
     $event = ($data["event"]);
     $data = ($data["data"]);
 
-    if (empty($userid)) {
+    if (empty($userId)) {
         error(5.00, 'no user id');
         exit();
     } else {
-        $userData = getUserData($userid);
+        $userData = getUserData($userId);
     }
 
-    function mailDispatcher($userid, $event, $userData) {
+    function mailDispatcher($userId, $event, $userData) {
         switch ($event) {
             case "like":
                 $msgDetails = likeTemplate($userData["login"]);
@@ -42,10 +43,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $msgDetails = dislikeTemplate($userData["login"]);
                 break;
             case "forgotten":
-                $msgDetails = sendPasswordTemplate($userid, $userData);
+                $msgDetails = sendPasswordTemplate($userId, $userData);
                 break;
             case "signup":
-                $msgDetails = signupTemplate($userid, $userData);
+                $msgDetails = signupTemplate($userId, $userData);
                 break;
             default:
                 error(5.02, 'no event in request');
@@ -54,9 +55,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         return $msgDetails;  //$msgDetails = [ "title" => "Some title", "msg" => "Some text"];
     }
 
-    $content = mailDispatcher($userid, $event, $userData);
+    $content = mailDispatcher($userId, $event, $userData);
     if ($content != false) {
-        include "./mailsender.php";
+        include "./mail_sender.php";
         mailSend($userData["address"], $content);
     }
 } // A decryption starts here by GET request:
@@ -75,11 +76,12 @@ elseif ($_SERVER["REQUEST_METHOD"] == "GET"){
     $expirationPeriod  = 600; // 10 minutes. Here it is possible to choose any 'life time' for links
 
     if ((time() - $idTimeLock["sent"]) <= $expirationPeriod) {
-        $userData = getUserData($idTimeLock["userid"]);
-        handleLink($event, $idTimeLock["userid"], $userData, $idTimeLock);
+        $userData = getUserData($idTimeLock["userId"]);
+        handleLink($event, $idTimeLock["userId"], $userData, $idTimeLock);
     } else {
         header("HTTP/1.1 403 Forbidden."); // This link has expired, user needs to request a new link
     }
 } else {
     exit();
 }
+
