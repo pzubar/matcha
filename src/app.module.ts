@@ -21,6 +21,7 @@ import { DatabaseModule } from './db/database.module'
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schema.graphql'),
       context: ({ req }) => ({ req }),
+      installSubscriptionHandlers: true,
       formatError({ message }) {
         return new Error(message)
       }

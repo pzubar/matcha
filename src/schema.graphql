@@ -11,15 +11,29 @@ type LoginResponse {
   token: String!
 }
 
+type Message {
+  id: Int!
+  message: String!
+  senderId: Float!
+  receiverId: Float!
+}
+
+input MessageInputData {
+  message: String!
+  receiverId: Int!
+}
+
 type Mutation {
   signUp(signUpUserData: SignUpUserData!): LoginResponse!
   login(loginInputData: LoginInputData!): LoginResponse!
+  sendMessage(messageInputData: MessageInputData!): Message!
 }
 
 type Query {
   whoAmI: User!
   user(id: Int!): User!
   users: [User!]!
+  messages: [Message!]!
 }
 
 input SignUpUserData {
@@ -28,6 +42,10 @@ input SignUpUserData {
   password: String!
   firstName: String!
   lastName: String!
+}
+
+type Subscription {
+  messageSent: Message!
 }
 
 type User {
