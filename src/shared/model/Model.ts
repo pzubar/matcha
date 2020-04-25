@@ -1,4 +1,5 @@
 import { Database } from '@db'
+import * as snakecaseKeys from 'snakecase-keys'
 
 export default class Model<T> {
   protected table: string
@@ -38,6 +39,6 @@ export default class Model<T> {
   }
 
   insert(values) {
-    return this.database(this.table).insert(values)
+    return this.database(this.table).insert(snakecaseKeys(values))
   }
 }

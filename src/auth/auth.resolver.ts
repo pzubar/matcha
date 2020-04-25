@@ -37,7 +37,7 @@ export class AuthResolver {
       headers: { 'Content-Type': 'application/json' }
     })
       .then(() => console.log('Mail send to user with id', result))
-      .catch(error => console.log('Mail send failed: ', error))
+      .catch(error => console.warn('Mail send failed: ', error))
 
     return { token }
   }

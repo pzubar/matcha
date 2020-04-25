@@ -1,17 +1,20 @@
-import { Injectable, Inject } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { QueryResult } from 'pg'
 import { query } from '@db'
 import { Either } from '@shared/types'
-import { USER_MODEL } from '@shared/constants'
 import UserModel, { User } from './model'
 
 @Injectable()
 export class UsersService {
   constructor(private userModel: UserModel) {}
 
-  async findOne(nameOrEmail: string): Promise<Either<User, Error>> {
+  async findOne(
+    arg: number | { usernameOrEmail?: string }
+  ): Promise<Either<User, Error>> {
     try {
-      return await this.userModel.findByUserNameOrEmail(nameOrEmail)
+      return await (typeof arg === 'number'
+        ? this.userModel.findById(arg)
+        : this.userModel.findByUserNameOrEmail(arg.usernameOrEmail))
     } catch (e) {
       return e
     }

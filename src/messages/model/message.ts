@@ -6,7 +6,7 @@ import { Message } from './message.object-type'
 
 class MessageModel extends Model<Message> {
   constructor(@Inject(DATABASE_CONNECTION) database: Database<Message>) {
-    super(database, 'message')
+    super(database, 'messages')
   }
 
   async getConversation(senderId, receiverId, lastId) {
