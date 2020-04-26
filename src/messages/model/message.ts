@@ -3,6 +3,7 @@ import { Inject } from '@nestjs/common'
 import { DATABASE_CONNECTION } from '@shared/constants'
 import { Database } from '@db'
 import { Message } from './message.object-type'
+import * as snakecaseKeys from 'snakecase-keys'
 
 class MessageModel extends Model<Message> {
   constructor(@Inject(DATABASE_CONNECTION) database: Database<Message>) {
@@ -12,9 +13,19 @@ class MessageModel extends Model<Message> {
   async getConversation(senderId, receiverId, lastId) {
     return this.database(this.table)
       .where('id', '>', lastId)
-      .andWhere({ senderId })
-      .andWhere({ receiverId })
-      .limit(10)
+      .andWhere(function() {
+        this.where(snakecaseKeys({ senderId, receiverId })).orWhere(
+          snakecaseKeys({
+            senderId: receiverId,
+            receiverId: senderId
+          })
+        )
+      })
+    // eslint-disable-next-line func-names
+    // .andWhereRaw(
+    //   `(sender_id = :senderId AND receiver_id = :receiverId) OR (receiver_id = :senderId AND sender_id = :receiverId)`,
+    //   { senderId, receiverId }
+    // )
   }
 }
 

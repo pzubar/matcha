@@ -20,6 +20,14 @@ export class UsersService {
     }
   }
 
+  async getMessages(userId: number, cursor?: number) {
+    try {
+      return await this.userModel.getMessages(userId, cursor)
+    } catch (e) {
+      return e
+    }
+  }
+
   async checkIfUserAlreadyExists(
     username: string,
     email: string

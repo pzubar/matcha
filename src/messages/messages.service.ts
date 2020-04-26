@@ -1,12 +1,10 @@
 import { Injectable } from '@nestjs/common'
 import MessageModel from './model/message'
-import UserModel from '../users/model'
 
 @Injectable()
 export class MessagesService {
   constructor(
     private messageModel: MessageModel,
-    private userModel: UserModel
   ) {}
 
   async sendMessage(message: string, senderId: number, receiverId: number) {
@@ -17,5 +15,9 @@ export class MessagesService {
         receiverId
       }
     ])
+  }
+
+  async getConversation(userId: number, interlocutorId) {
+    return this.messageModel.getConversation(userId, interlocutorId, 1)
   }
 }
