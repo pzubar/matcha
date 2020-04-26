@@ -7,9 +7,10 @@ exports.up = pgm => {
       CREATE TABLE IF NOT EXISTS messages
       (
           id          SERIAL PRIMARY KEY,
-          message     TEXT NOT NULL,
-          sender_id   INT  NOT NULL REFERENCES users (id),
-          receiver_id INT  NOT NULL REFERENCES users (id)
+          message     TEXT                                NOT NULL,
+          sender_id   INT                                 NOT NULL REFERENCES users (id),
+          receiver_id INT                                 NOT NULL REFERENCES users (id),
+          created_at  TIMESTAMP DEFAULT current_timestamp NOT NULL
       )
   `
 }

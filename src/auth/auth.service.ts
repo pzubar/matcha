@@ -41,7 +41,7 @@ export class AuthService {
 
     // TODO: Do not throw ERROR here?
     if (isError(user) || !(await bcrypt.compare(pass, user.password))) {
-      return new Error('No user with such email or password!')
+      throw new Error('No user with such email or password!')
     }
 
     return user

@@ -34,6 +34,7 @@ type Query {
   user(id: Int!): User!
   users: [User!]!
   messages: [Message!]!
+  conversation(interlocutorId: Float!): [Message!]!
 }
 
 input SignUpUserData {
@@ -45,7 +46,7 @@ input SignUpUserData {
 }
 
 type Subscription {
-  messageSent: Message!
+  MESSAGE_SENT: Message!
 }
 
 type User {

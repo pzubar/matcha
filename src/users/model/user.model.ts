@@ -18,11 +18,28 @@ class UserModel extends Model<User> {
       .first()
   }
 
-  async getMessages(senderId, lastId): Promise<Array<Message>> {
-    return this.database<Message>('message')
-      .where('id', '>', lastId)
-      .andWhere(q => q.where({ senderId }).orWhere({ receiverId: senderId }))
-      .limit(10)
+  async getMessages(userId: number, lastId: number): Promise<Array<Message>> {
+    const result = await this.database.raw(
+      `
+					SELECT DISTINCT ON (userId) sub.*, users.username, users.id
+					FROM (
+						     SELECT 'out' AS type, id, receiver_id AS userId, message, created_at
+						     FROM messages
+						     WHERE :senderId: = :userId
+
+						     UNION ALL
+						     SELECT 'in' AS type, id, sender_id AS userId, message, created_at
+						     FROM messages
+						     WHERE :receiverId: = :userId
+					     ) sub
+						     JOIN users on users.id = userId
+					ORDER BY userId, sub.created_at DESC
+    `,
+      { senderId: 'sender_id', receiverId: 'receiver_id', userId }
+    )
+    const { rows } = result
+
+    return rows
   }
 }
 

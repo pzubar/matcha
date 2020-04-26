@@ -20,28 +20,33 @@ export class MessagesResolver {
   constructor(
     private messagesService: MessagesService,
     private usersService: UsersService
-  ) {}
-
-  @Query(returns => [Message])
-  @UseGuards(GqlAuthGuard)
-  async messages(@CurrentUser() user: User) {
-    if (!user) {
-      throw new Error('You must be logged in')
-    }
-
-    // const { cursor } = args
-    // const users = await this.messagesService.
-    // const messages = await models.user.getMessages(user.id, cursor)
-    //
-    // const filteredMessages = messages.map(message => {
-    //   const sender = users.find(user => user.id === message.senderId)
-    //   const receiver = users.find(user => user.id === message.receiverId)
-    //   return { ...message, sender, receiver }
-    // })
-
-    return []
+  ) {
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Query(returns => [Message])
+  async messages(
+    @CurrentUser() user: User
+    // @Args('cursor') cursor: number
+  ) {
+    const messages = await this.usersService.getMessages(user.id)
+
+    return messages
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(returns => [Message])
+  async conversation(
+    @CurrentUser() user: User,
+    @Args('interlocutorId') interlocutorId: number
+  ) {
+    const messages = await this.messagesService.getConversation(
+      user.id,
+      interlocutorId
+    )
+
+    return messages
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Message)
@@ -49,9 +54,6 @@ export class MessagesResolver {
     @CurrentUser() user: User,
     @Args('messageInputData') messageInputData: MessageInputData
   ) {
-    if (!user) {
-      throw new Error('You must be logged in')
-    }
     const { message, receiverId } = messageInputData
 
     const receiver = await this.usersService.findOne(receiverId)
@@ -74,21 +76,25 @@ export class MessagesResolver {
         sender: user
       }
 
-      pubSub.publish(SubscriptionEvents.MESSAGE_SENT, {
-        messageSent: newMessage
-      })
+      pubSub
+        .publish(SubscriptionEvents.MESSAGE_SENT, {
+          messageSent: newMessage
+        })
+        .catch(e => {
+          console.error('Error occurred while publishing message', e)
+        })
 
       return newMessage
     } catch (e) {
-      console.error("ERRRRR:::", e)
+      console.error('Error occurred while addingMessage', e)
       throw new Error('No message sent!')
     }
   }
 
   @Subscription(returns => Message, {
-    name: 'messageSent'
+    name: SubscriptionEvents.MESSAGE_SENT
   })
   addCommentHandler() {
-    return pubSub.asyncIterator('messageSent')
+    return pubSub.asyncIterator(SubscriptionEvents.MESSAGE_SENT)
   }
 }
