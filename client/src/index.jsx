@@ -9,15 +9,31 @@ import {
 } from '@apollo/client'
 import './index.css'
 import App from './App'
-import { IS_LOGGED } from './shared/graphql/queries/is-logged-in'
+import { IS_LOGGED } from './shared/graphql/queries'
 import { typeDefs, resolvers } from './shared/graphql'
+import { ThemeProvider } from '@livechat/ui-kit'
+import { setContext } from 'apollo-link-context'
 
 const cache = new InMemoryCache()
-const client= new ApolloClient({
+const authLink = setContext((_, { headers }) => {
+  // get the authentication token from local storage if it exists
+  const token = localStorage.getItem('token')
+  // return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : ''
+    }
+  }
+})
+
+const httpLink = new HttpLink({
+  uri: 'http://localhost:8000/graphql'
+})
+
+const client = new ApolloClient({
   cache,
-  link: new HttpLink({
-    uri: 'http://localhost:8000/graphql'
-  }),
+  link: authLink.concat(httpLink),
   resolvers,
   typeDefs
 })
@@ -31,7 +47,9 @@ cache.writeQuery({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </ApolloProvider>,
   document.getElementById('root')
 )

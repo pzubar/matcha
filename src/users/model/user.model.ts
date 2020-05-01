@@ -6,7 +6,7 @@ import User from './user.object-type'
 import { Message } from '../../messages/model'
 
 @Injectable()
-class UserModel extends Model<User> {
+class UserModel extends Model<User & {password?: string}> {
   constructor(@Inject(DATABASE_CONNECTION) database: Database<User>) {
     super(database, 'users')
   }
@@ -41,6 +41,10 @@ class UserModel extends Model<User> {
 
     return rows
   }
+  //
+  // async all() {
+  //   return (await super.all()).map(({password, ...rest}) => rest)
+  // }
 }
 
 export default UserModel
