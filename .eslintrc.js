@@ -26,7 +26,7 @@ module.exports = {
         alwaysTryTypes: true
       },
       node: {
-        paths: ['src'],
+        paths: ['src', 'client'],
         extensions: ['.js', '.jsx', '.ts', '.tsx']
       }
     }

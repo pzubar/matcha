@@ -1,6 +1,5 @@
 import { Pool, QueryConfig } from 'pg'
 import * as Knex from 'knex'
-import * as camelcaseKeys from 'camelcase-keys'
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || process.env.DATABASE_URL_LOCAL,
@@ -25,13 +24,6 @@ const database = connection =>
     client: 'pg',
     connection,
     searchPath: ['knex', 'public'],
-    postProcessResponse: (result, queryContext) => {
-      console.log("KNEXXX")
-      if (Array.isArray(result)) {
-        return result.map(row => camelcaseKeys(row))
-      }
-      return camelcaseKeys(result)
-    }
   })
 
 export default database

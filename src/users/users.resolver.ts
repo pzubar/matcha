@@ -9,7 +9,7 @@ export class UsersResolver {
   @Query(returns => User)
   @UseGuards(GqlAuthGuard)
   whoAmI(@CurrentUser() user: User) {
-    return { id: 321312, firstName: 'Petr', lastName: 'Ivanov' }
+    return user
   }
 
   @Query(returns => User)
