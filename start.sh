@@ -3,7 +3,7 @@ ROOTDIR=./php
 PORT=8100
 
 source ./sendgrid.env
-source  ./.env
+source  ./php.env
 cd $ROOTDIR || exit
 
 trap 'kill %1;' SIGINT
