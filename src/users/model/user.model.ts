@@ -33,16 +33,12 @@ class UserModel extends Model<User> {
       )
       .as('sub')
 
-    const result = this.database
+    return this.database()
       .distinctOn('interlocutor_id')
-      .columns('sub.*')
+      .columns('sub.*', 'users.username as interlocutor_name')
       .from(sub)
       .join(this.table, 'users.id', 'interlocutor_id')
       .orderBy('interlocutor_id', 'desc')
-
-    console.log('RRR', result.toSQL())
-    debugger
-    return result
   }
 }
 
