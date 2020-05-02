@@ -18,7 +18,7 @@ const Home = () => {
         'Loading...'
       ) : (
         <div>
-          Welcome Home, {data.whoAmI.username}!
+          Welcome Home, {data?.whoAmI?.username}!
           <button
             onClick={() => {
               client.writeQuery({

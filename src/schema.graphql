@@ -14,8 +14,8 @@ type LoginResponse {
 type Message {
   id: Int!
   message: String!
-  senderId: Float!
-  receiverId: Float!
+  interlocutorId: Float!
+  type: String!
 }
 
 input MessageInputData {
