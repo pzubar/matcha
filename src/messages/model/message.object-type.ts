@@ -10,8 +10,10 @@ export class Message {
   message: string
 
   @Field()
-  senderId: Id
+  interlocutorId: Id
 
   @Field()
-  receiverId: Id
+  type: string
+
+  senderId: number
 }

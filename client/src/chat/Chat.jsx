@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   ChatList,
   ChatListItem,
@@ -8,8 +8,17 @@ import {
   Title,
   Subtitle
 } from '@livechat/ui-kit'
+import { useQuery } from '@apollo/client'
+import { GET_MESSAGES } from './graphql/queries'
 
 export default () => {
+  const { data: messages } = useQuery(GET_MESSAGES)
+
+  useEffect(() => {
+    const messagi = messages
+    debugger
+  }, [messages])
+
   return (
     <ChatList style={{ maxWidth: 300 }}>
       <ChatListItem active>
