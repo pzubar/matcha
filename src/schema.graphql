@@ -16,6 +16,7 @@ type Message {
   message: String!
   interlocutorId: Float!
   type: String!
+  interlocutorName: String!
 }
 
 input MessageInputData {

@@ -4,6 +4,7 @@ export const GET_MESSAGES = gql`
   {
     messages {
       interlocutorId
+      interlocutorName
       message
       type
     }

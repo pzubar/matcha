@@ -16,4 +16,7 @@ export class Message {
   type: string
 
   senderId: number
+
+  @Field()
+  interlocutorName: string
 }
