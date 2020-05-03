@@ -20,7 +20,7 @@ import { AuthResolver } from './auth.resolver'
     }),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600m' }
+      signOptions: { expiresIn: '600h' }
     })
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy, AuthResolver],

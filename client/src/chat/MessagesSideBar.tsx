@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React from 'react'
+import { Message } from '../shared/types'
 import {
   ChatList,
   ChatListItem,
@@ -7,20 +8,27 @@ import {
   Row,
   Title,
   Subtitle
+  // @ts-ignore
 } from '@livechat/ui-kit'
-import { useQuery } from '@apollo/client'
-import { GET_MESSAGES } from './graphql/queries'
+interface Props {
+  messages: Array<Message>
+}
 
-export default () => {
-  const { data: messages } = useQuery(GET_MESSAGES)
-
-  useEffect(() => {
-    const messagi = messages
-    debugger
-  }, [messages])
-
+const MessagesSideBar = ({ messages }: Props) => {
   return (
     <ChatList style={{ maxWidth: 300 }}>
+      {messages.map(({ interlocutorName, message, id }) => (
+        <ChatListItem active key={id}>
+          <Avatar letter={interlocutorName[0]} />
+          <Column fill>
+            <Row justify>
+              <Title ellipsis>{interlocutorName}</Title>
+            </Row>
+            <Subtitle ellipsis>{message}</Subtitle>
+          </Column>
+        </ChatListItem>
+      ))}
+      {'-----'}
       <ChatListItem active>
         <Avatar letter="J" />
         <Column fill>
@@ -46,3 +54,5 @@ export default () => {
     </ChatList>
   )
 }
+
+export default MessagesSideBar

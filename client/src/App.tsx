@@ -16,7 +16,7 @@ function App() {
         <Switch>
           <Route exact path="/" component={data.isLoggedIn ? Home : Auth} />
           <Route path={['/login', '/sign-up']} component={Auth} />
-          <Route path={'/chat'} component={Chat} />
+          <Route path={'/chat/:interlocutorId?'} component={Chat} />
         </Switch>
       </Suspense>
     </Router>
