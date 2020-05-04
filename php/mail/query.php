@@ -14,12 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $postData = file_get_contents('php://input');
     $data = json_decode($postData, true);
 
-    $userId = ($data["userId"]);
-    $event = ($data["event"]);
-    $data = ($data["data"]);
+    $userId = $data["userId"];
+    $event = $data["event"];
 
     if (empty($userId)) {
-        error(5.00, 'no user id');
+        error(5.00, 'no user id in post request');
         exit();
     } else {
         $userData = getUserData($userId);
@@ -49,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $msgDetails = signupTemplate($userId, $userData);
                 break;
             default:
-                error(5.02, 'no event in request');
+                error(5.02, 'no event in post request');
                 $msgDetails = false;
         }
         return $msgDetails;  //$msgDetails = [ "title" => "Some title", "msg" => "Some text"];
@@ -84,4 +83,3 @@ elseif ($_SERVER["REQUEST_METHOD"] == "GET"){
 } else {
     exit();
 }
-
