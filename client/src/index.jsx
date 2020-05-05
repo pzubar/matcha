@@ -5,7 +5,8 @@ import {
   ApolloClient,
   HttpLink,
   InMemoryCache,
-  ApolloProvider
+  ApolloProvider,
+  split
 } from '@apollo/client'
 import './index.css'
 import App from './App'
@@ -13,6 +14,8 @@ import { IS_LOGGED } from './shared/graphql/queries'
 import { typeDefs, resolvers } from './shared/graphql'
 import { ThemeProvider } from '@livechat/ui-kit'
 import { setContext } from 'apollo-link-context'
+import { WebSocketLink } from '@apollo/link-ws'
+import { getMainDefinition } from '@apollo/client/utilities'
 
 const cache = new InMemoryCache()
 const authLink = setContext((_, { headers }) => {
@@ -30,9 +33,27 @@ const httpLink = new HttpLink({
   uri: 'http://localhost:8000/graphql'
 })
 
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:8000/graphql`,
+  options: {
+    reconnect: true
+  }
+})
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
+  wsLink,
+  authLink.concat(httpLink)
+)
 const client = new ApolloClient({
   cache,
-  link: authLink.concat(httpLink),
+  link: splitLink,
   resolvers,
   typeDefs
 })
@@ -53,7 +74,4 @@ ReactDOM.render(
   document.getElementById('root')
 )
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister()

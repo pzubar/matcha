@@ -5,7 +5,7 @@ export default ({onSend}) => {
   return (
     <TextComposer onSend={onSend}>
       <Row align="center">
-        <TextInput fill />
+        <TextInput />
         <SendButton fit />
       </Row>
     </TextComposer>

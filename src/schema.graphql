@@ -15,8 +15,10 @@ type Message {
   id: Int!
   message: String!
   interlocutorId: Float!
-  type: String!
+  type: String
   interlocutorName: String!
+  senderId: Int
+  receiverId: Int
 }
 
 input MessageInputData {
@@ -47,7 +49,7 @@ input SignUpUserData {
 }
 
 type Subscription {
-  MESSAGE_SENT: Message!
+  messageSent(receiverId: Int!): Message!
 }
 
 type User {

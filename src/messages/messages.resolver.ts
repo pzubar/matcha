@@ -1,4 +1,11 @@
-import { Query, Resolver, Subscription, Mutation, Args } from '@nestjs/graphql'
+import {
+  Query,
+  Resolver,
+  Subscription,
+  Mutation,
+  Args,
+  Int
+} from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { UseGuards } from '@nestjs/common'
 import { CurrentUser } from '@shared/decorators/gql-current-user'
@@ -12,7 +19,7 @@ import { UsersService } from '../users/users.service'
 const pubSub = new PubSub()
 
 export const enum SubscriptionEvents {
-  MESSAGE_SENT = 'MESSAGE_SENT'
+  MESSAGE_SENT = 'messageSent'
 }
 
 @Resolver('Messages')
@@ -20,18 +27,12 @@ export class MessagesResolver {
   constructor(
     private messagesService: MessagesService,
     private usersService: UsersService
-  ) {
-  }
+  ) {}
 
   @UseGuards(GqlAuthGuard)
   @Query(returns => [Message])
-  async messages(
-    @CurrentUser() user: User
-    // @Args('cursor') cursor: number
-  ) {
-    const messages = await this.usersService.getMessages(user.id)
-
-    return messages
+  async messages(@CurrentUser() user: User) {
+    return await this.usersService.getMessages(user.id)
   }
 
   @UseGuards(GqlAuthGuard)
@@ -69,16 +70,16 @@ export class MessagesResolver {
         receiverId
       )
 
-      const newMessage = {
+      const newMessage: Message = {
         id: result[0],
         message,
-        receiver,
-        sender: user
+        receiverId,
+        interlocutorName: user.username,
+        interlocutorId: user.id
       }
-
       pubSub
         .publish(SubscriptionEvents.MESSAGE_SENT, {
-          messageSent: newMessage
+          ...newMessage
         })
         .catch(e => {
           console.error('Error occurred while publishing message', e)
@@ -92,9 +93,14 @@ export class MessagesResolver {
   }
 
   @Subscription(returns => Message, {
-    name: SubscriptionEvents.MESSAGE_SENT
+    // name: SubscriptionEvents.MESSAGE_SENT,
+    filter: (payload, variables) => payload.receiverId === variables.receiverId,
+    resolve: value => {
+      console.log('VVV', value)
+      return value
+    }
   })
-  addCommentHandler() {
+  messageSent(@Args('receiverId', { type: () => Int }) receiverId: number) {
     return pubSub.asyncIterator(SubscriptionEvents.MESSAGE_SENT)
   }
 }

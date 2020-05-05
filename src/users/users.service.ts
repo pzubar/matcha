@@ -18,7 +18,7 @@ export class UsersService {
 
       return user || error(new Error('No such an user'))
     } catch (e) {
-      return e
+      return error(e)
     }
   }
 
@@ -26,7 +26,7 @@ export class UsersService {
     try {
       return await this.userModel.getMessages(userId, cursor)
     } catch (e) {
-      return e
+      return error(e)
     }
   }
 
@@ -44,6 +44,14 @@ export class UsersService {
     )
 
     return !!result?.rows?.length
+  }
+
+  async getAllUsers(): Promise<Either<Array<User>, Error>> {
+    try {
+      return await this.userModel.all()
+    } catch (e) {
+      return error(e)
+    }
   }
 
   // In spatial databases spatial coordinates are in x = longitude, and y = latitude.

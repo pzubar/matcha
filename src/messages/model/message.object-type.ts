@@ -12,11 +12,15 @@ export class Message {
   @Field()
   interlocutorId: Id
 
-  @Field()
-  type: string
-
-  senderId: number
+  @Field({ nullable: true })
+  type?: string
 
   @Field()
   interlocutorName: string
+
+  @Field(type => Int, { nullable: true })
+  senderId?: number
+
+  @Field(type => Int, { nullable: true })
+  receiverId?: number
 }

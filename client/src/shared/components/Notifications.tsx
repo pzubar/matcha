@@ -1,0 +1,65 @@
+import React, { useState } from 'react'
+import { useQuery, gql, useSubscription } from '@apollo/client'
+import { Snackbar } from '@material-ui/core'
+import { Message } from '../types'
+import { WHO_AM_I } from '../graphql/queries'
+
+const MESSAGE_SENT = gql`
+  subscription($receiverId: Int!) {
+    messageSent(receiverId: $receiverId) {
+      message
+    }
+  }
+`
+interface MessageSent {
+  messageSent: Message
+}
+
+const Notifications = () => {
+  const [open, setOpen] = useState(false)
+  const { data: userData } = useQuery(WHO_AM_I)
+  const { data: messageSentData, error } = useSubscription<MessageSent>(
+    MESSAGE_SENT,
+    {
+      variables: { receiverId: 29 },
+      shouldResubscribe: true,
+      skip: !userData?.whoAmI?.id
+    }
+  )
+
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string
+  ) => {
+    if (reason === 'clickaway') {
+      return
+    }
+
+    setOpen(false)
+  }
+
+  React.useEffect(() => {
+    const t = messageSentData
+    debugger
+  }, [messageSentData])
+
+  React.useEffect(() => {
+    const e = error
+    debugger
+  }, [error])
+
+  return (
+    <Snackbar
+      anchorOrigin={{
+        vertical: 'top',
+        horizontal: 'right'
+      }}
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      message="Note archived"
+    />
+  )
+}
+
+export default Notifications

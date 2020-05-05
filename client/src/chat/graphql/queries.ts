@@ -15,9 +15,16 @@ export const GET_CONVERSATION = gql`
   query getConversation($interlocutorId: Float!) {
     conversation(interlocutorId: $interlocutorId) {
       message
-#      interlocutorId
-#      interlocutorName
-#      type
+      senderId
+    }
+  }
+`
+
+export const GET_USER = gql`
+  query getUser($userId: Int!) {
+    user(id: $userId) {
+      id
+      username
     }
   }
 `

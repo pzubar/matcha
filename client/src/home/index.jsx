@@ -7,11 +7,6 @@ const Home = () => {
   const client = useApolloClient()
   const { data, loading } = useQuery(WHO_AM_I)
 
-  useEffect(() => {
-    const azz = data
-    debugger
-  }, [data])
-
   return (
     <Container component="main" maxWidth="xs">
       {loading ? (

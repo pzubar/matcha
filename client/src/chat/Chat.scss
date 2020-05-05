@@ -1,0 +1,8 @@
+.conversation-wrapper {
+  height: 100%;
+}
+
+.conversation-block {
+  max-height: calc(100% - 45px);
+  overflow-y: scroll;
+}
