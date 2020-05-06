@@ -12,10 +12,10 @@ include_once '../general_utilities.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $postData = file_get_contents('php://input');
-    $data = json_decode($postData, true);
+    $dataDecoded = json_decode($postData, true);
 
-    $userId = $data["userId"];
-    $event = $data["event"];
+    $userId = $dataDecoded["userId"];
+    $event = $dataDecoded["event"];
 
     if (empty($userId)) {
         error(5.00, 'no user id in post request');
