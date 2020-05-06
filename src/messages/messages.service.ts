@@ -14,7 +14,7 @@ export class MessagesService {
           receiverId
         }
       ])
-      .returning('id')
+      .returning(['id', 'createdAt'])
   }
 
   async getConversation(userId: number, interlocutorId) {

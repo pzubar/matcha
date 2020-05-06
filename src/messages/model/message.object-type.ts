@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql'
+import { Field, Int, ObjectType, GraphQLISODateTime } from '@nestjs/graphql'
 import { Id } from '@shared/types'
 
 @ObjectType()
@@ -23,4 +23,7 @@ export class Message {
 
   @Field(type => Int, { nullable: true })
   receiverId?: number
+
+  @Field(type => GraphQLISODateTime)
+  createdAt: Date
 }

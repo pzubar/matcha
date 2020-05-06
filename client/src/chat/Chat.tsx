@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect } from 'react'
 import { useMutation, useQuery } from '@apollo/client'
-import { GET_CONVERSATION, GET_MESSAGES, GET_USER } from './graphql/queries'
-import { Message } from '../shared/types'
+import { GET_CONVERSATION, GET_MESSAGES } from './graphql/queries'
+import { Message, User } from '../shared/types'
 import MessagesSideBar from './MessagesSideBar'
 import { LinearProgress, Grid, Container } from '@material-ui/core'
-import TextComposer from './TextComposer'
 import { useParams } from 'react-router-dom'
 import { SEND_MESSAGE } from './graphql/mutations'
 import Conversation from './Conversation'
+import TextComposer from './TextComposer'
 import './Chat.scss'
 
 interface MessagesData {
@@ -15,6 +15,7 @@ interface MessagesData {
 }
 interface ConversationData {
   conversation: Array<Message>
+  user: User
 }
 
 export default () => {
@@ -22,14 +23,12 @@ export default () => {
   const { data: messagesData, loading: messagesLoading, error: e } = useQuery<
     MessagesData
   >(GET_MESSAGES)
-  const { data: conversationData, loading: conversationLoading } = useQuery<
-    ConversationData
-  >(GET_CONVERSATION, {
+  const {
+    data: conversationData,
+    loading: conversationLoading,
+    error: conver
+  } = useQuery<ConversationData>(GET_CONVERSATION, {
     variables: { interlocutorId: Number(interlocutorId) },
-    skip: !interlocutorId
-  })
-  const { data: userData } = useQuery(GET_USER, {
-    variables: { userId: Number(interlocutorId) },
     skip: !interlocutorId
   })
   const [sendMessage, { data, loading, error }] = useMutation(SEND_MESSAGE)
@@ -40,13 +39,14 @@ export default () => {
       }
     })
   }, [])
+  const isLoaderShown = messagesLoading || conversationLoading
 
   useEffect(() => {
     const c = conversationData
+    const er = conver
     debugger
-  }, [conversationData])
+  }, [conversationData, conver])
 
-  const isLoaderShown = messagesLoading || conversationLoading
   return (
     <Container>
       {isLoaderShown && <LinearProgress variant="query" />}
@@ -57,7 +57,10 @@ export default () => {
           )}
         </Grid>
         <Grid item xs={12} md={9} className={'conversation-wrapper'}>
-          <Conversation conversation={conversationData?.conversation} />
+          <Conversation
+            interlocutorData={conversationData?.user}
+            conversation={conversationData?.conversation}
+          />
           <TextComposer onSend={onMessageSend} />
         </Grid>
       </Grid>

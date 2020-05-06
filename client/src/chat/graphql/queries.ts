@@ -12,10 +12,14 @@ export const GET_MESSAGES = gql`
   }
 `
 export const GET_CONVERSATION = gql`
-  query getConversation($interlocutorId: Float!) {
+  query getConversation($interlocutorId: Int!) {
     conversation(interlocutorId: $interlocutorId) {
       message
       senderId
+      createdAt
+    }
+    user(id: $interlocutorId) {
+      username
     }
   }
 `

@@ -7,7 +7,10 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
 };
+
 
 export type LoginInputData = {
   usernameOrEmail: Scalars['String'];
@@ -24,8 +27,11 @@ export type Message = {
   id: Scalars['Int'];
   message: Scalars['String'];
   interlocutorId: Scalars['Float'];
-  type: Scalars['String'];
+  type?: Maybe<Scalars['String']>;
   interlocutorName: Scalars['String'];
+  senderId?: Maybe<Scalars['Int']>;
+  receiverId?: Maybe<Scalars['Int']>;
+  createdAt: Scalars['DateTime'];
 };
 
 export type MessageInputData = {
@@ -71,7 +77,7 @@ export type QueryUserArgs = {
 
 
 export type QueryConversationArgs = {
-  interlocutorId: Scalars['Float'];
+  interlocutorId: Scalars['Int'];
 };
 
 export type SignUpUserData = {
@@ -84,7 +90,12 @@ export type SignUpUserData = {
 
 export type Subscription = {
    __typename?: 'Subscription';
-  MESSAGE_SENT: Message;
+  messageSent: Message;
+};
+
+
+export type SubscriptionMessageSentArgs = {
+  receiverId: Scalars['Int'];
 };
 
 export type User = {

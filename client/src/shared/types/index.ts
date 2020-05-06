@@ -1,1 +1,1 @@
-export type { Message } from './generated'
+export type { Message, User } from './generated'

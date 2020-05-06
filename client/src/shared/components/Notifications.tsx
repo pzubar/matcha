@@ -38,15 +38,15 @@ const Notifications = () => {
     setOpen(false)
   }
 
-  React.useEffect(() => {
-    const t = messageSentData
-    debugger
-  }, [messageSentData])
-
-  React.useEffect(() => {
-    const e = error
-    debugger
-  }, [error])
+  // React.useEffect(() => {
+  //   const t = messageSentData
+  //   debugger
+  // }, [messageSentData])
+  //
+  // React.useEffect(() => {
+  //   const e = error
+  //   debugger
+  // }, [error])
 
   return (
     <Snackbar

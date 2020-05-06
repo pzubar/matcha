@@ -39,13 +39,13 @@ export class MessagesResolver {
   @Query(returns => [Message])
   async conversation(
     @CurrentUser() user: User,
-    @Args('interlocutorId') interlocutorId: number
+    @Args('interlocutorId', { type: () => Int }) interlocutorId: number
   ) {
     const messages = await this.messagesService.getConversation(
       user.id,
       interlocutorId
     )
-
+    console.log('MESSAGES', messages)
     return messages
   }
 
@@ -64,18 +64,19 @@ export class MessagesResolver {
     }
 
     try {
-      const result = await this.messagesService.sendMessage(
+      const [{ createdAt, id }] = await this.messagesService.sendMessage(
         message,
         user.id,
         receiverId
       )
 
       const newMessage: Message = {
-        id: result[0],
+        id,
         message,
         receiverId,
         interlocutorName: user.username,
-        interlocutorId: user.id
+        interlocutorId: user.id,
+        createdAt
       }
       pubSub
         .publish(SubscriptionEvents.MESSAGE_SENT, {
@@ -93,12 +94,8 @@ export class MessagesResolver {
   }
 
   @Subscription(returns => Message, {
-    // name: SubscriptionEvents.MESSAGE_SENT,
     filter: (payload, variables) => payload.receiverId === variables.receiverId,
-    resolve: value => {
-      console.log('VVV', value)
-      return value
-    }
+    resolve: value => value
   })
   messageSent(@Args('receiverId', { type: () => Int }) receiverId: number) {
     return pubSub.asyncIterator(SubscriptionEvents.MESSAGE_SENT)
