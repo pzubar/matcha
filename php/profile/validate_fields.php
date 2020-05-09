@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Here some validation will be added
+ * Some validation will be added here
  */
 function validateUpdates($fields) {
     if(1) {

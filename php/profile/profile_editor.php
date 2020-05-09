@@ -27,31 +27,32 @@ function hasValue($val) {
 
 
 function parseUpdates($data) {
-    // Check how many changes is needed
+    $queryCode = [0,0,0,0,0,0,0,0,0]; // this array shows
+    /*
+     * Example of result array
+     */
     $requestedFields = [
-        'username' => '',
-        'firstName'=> '',
-        'lastName'=> '',
-        'email'=> '',
-        'password'=> '',
-        'gender'=> '',
-        'birthday'=> '',
-        'biography'=> '',
-        'orientation'=> ''];
-    $queryCode = [0,0,0,0,0,0,0,0,0];
+        'username' => NULL,
+        'firstName'=> NULL,
+        'lastName'=> NULL,
+        'email'=> NULL,
+        'password'=> NULL,
+        'gender'=> NULL,
+        'birthday'=> NULL,
+        'biography'=> NULL,
+        'orientation'=> NULL];
+
     $i = 0;
-    echo "i start: " . $i;
-    // All changeable profile fields below:
+    /*
+     * All changeable profile fields below. Need to
+     * check & to note how many changes is needed:
+    */
 
     $newUsername = $data['username'];
     if (hasValue($newUsername) && !isNew('username', $newUsername)) {
         $requestedFields['username'] = $newUsername;
-        echo "Username i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['username'] = NULL;
-        echo "Username i # " . $i . " = " . $i;
+        echo "Username i # " . $i . " = " . $i; // this is for tests only, DELETE LATER!
+        $queryCode[$i] = 1;
         $i++;
     }
 
@@ -59,23 +60,16 @@ function parseUpdates($data) {
     if (hasValue($newFirstName) && !isNew('firstName', $newFirstName)) {
         $requestedFields['firstName'] = $newFirstName;
         echo "Firstname i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['firstName'] = NULL;
-        echo "Firstname i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
     }
+
 
     $newLastName = $data['lastName'];
     if (hasValue($newLastName) && !isNew('lastName', $newLastName)) {
         $requestedFields['lastName'] = $newLastName;
         echo "LastName i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['lastName'] = NULL;
-        echo "LastName i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
     }
 
@@ -83,11 +77,7 @@ function parseUpdates($data) {
     if (hasValue($newEmail) && !isNew('email', $newEmail)) {
         $requestedFields['email'] = $newEmail;
         echo "Email i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['email'] = NULL;
-        echo "Email i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
     }
 
@@ -98,11 +88,7 @@ function parseUpdates($data) {
     if (hasValue($newPassword) && !isNew('password', $newPassword)) {
         $requestedFields['password'] = $newPassword;
         echo "Password i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['password'] = NULL;
-        echo "Password i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
     }
 
@@ -110,11 +96,7 @@ function parseUpdates($data) {
     if (hasValue($newGender) && !isNew('gender', $newGender)) {
         $requestedFields['gender'] = $newGender;
         echo "Gender i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['gender'] = NULL;
-        echo "Gender i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
     }
 
@@ -122,38 +104,28 @@ function parseUpdates($data) {
     if (hasValue($newBirthday) && !isNew('birthday', $newBirthday)) {
         $requestedFields['birthday'] = $newBirthday;
         echo "Birthday i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['birthday'] = NULL;
-        echo "Birthday i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
-
     }
 
     $newBiography= $data['biography'];
     if (hasValue($newBiography) && !isNew('biography', $newBiography)) {
         $requestedFields['biography'] = $newBiography;
         echo "Biography i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
-    }
-    else {
-        $requestedFields['biography'] = NULL;
-        echo "Biography i # " . $i . " = " . $i;
+        $queryCode[$i] = 1;
         $i++;
-
     }
 
     $newOrientation= $data['orientation'];
     if (hasValue($newOrientation) && !isNew('orientation', $newOrientation)) {
         $requestedFields['orientation'] = $newOrientation;
         echo "Orientation i # " . $i . " = " . $i;
-        $queryCode[$i++] = 1;
+        $queryCode[$i] = 1;
     }
-    else {
-        $requestedFields['orientation'] = NULL;
-        echo "Orientation i # " . $i . " = " . $i;
-    }
+
+    /*
+     * Now the result arrays contains new values or NULL in fields
+     */
     return $requestedFields;
 }
 
