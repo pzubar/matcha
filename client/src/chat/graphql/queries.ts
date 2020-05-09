@@ -19,6 +19,7 @@ export const GET_CONVERSATION = gql`
       createdAt
     }
     user(id: $interlocutorId) {
+      id
       username
     }
   }

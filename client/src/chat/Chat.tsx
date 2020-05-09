@@ -9,6 +9,8 @@ import { SEND_MESSAGE } from './graphql/mutations'
 import Conversation from './Conversation'
 import TextComposer from './TextComposer'
 import './Chat.scss'
+import { MESSAGE_SENT } from './graphql/subscriptions'
+import { WHO_AM_I } from '../shared/graphql/queries'
 
 interface MessagesData {
   messages: Array<Message>
@@ -20,9 +22,13 @@ interface ConversationData {
 
 export default () => {
   const { interlocutorId } = useParams()
-  const { data: messagesData, loading: messagesLoading, error: e } = useQuery<
-    MessagesData
-  >(GET_MESSAGES)
+  const { data: userData } = useQuery(WHO_AM_I)
+  const {
+    subscribeToMore,
+    data: messagesData,
+    loading: messagesLoading,
+    error: e
+  } = useQuery<MessagesData>(GET_MESSAGES)
   const {
     data: conversationData,
     loading: conversationLoading,
@@ -60,6 +66,19 @@ export default () => {
           <Conversation
             interlocutorData={conversationData?.user}
             conversation={conversationData?.conversation}
+            subscribeToNewMessages={() =>
+              subscribeToMore({
+                document: MESSAGE_SENT,
+                // TODO: Make this variable dynamic somehow
+                //  also, subscribe to more may work not only with messages, but with conversation, too
+                variables: { receiverId: 28 },
+                updateQuery: (prev, { subscriptionData }) => {
+                  if (!subscriptionData.data) return prev
+                  debugger
+                  return Object.assign({}, prev, {})
+                }
+              })
+            }
           />
           <TextComposer onSend={onMessageSend} />
         </Grid>

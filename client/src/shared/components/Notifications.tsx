@@ -1,16 +1,10 @@
 import React, { useState } from 'react'
-import { useQuery, gql, useSubscription } from '@apollo/client'
+import { useQuery, useSubscription } from '@apollo/client'
 import { Snackbar } from '@material-ui/core'
 import { Message } from '../types'
 import { WHO_AM_I } from '../graphql/queries'
+import { MESSAGE_SENT } from '../../chat/graphql/subscriptions'
 
-const MESSAGE_SENT = gql`
-  subscription($receiverId: Int!) {
-    messageSent(receiverId: $receiverId) {
-      message
-    }
-  }
-`
 interface MessageSent {
   messageSent: Message
 }
@@ -21,7 +15,7 @@ const Notifications = () => {
   const { data: messageSentData, error } = useSubscription<MessageSent>(
     MESSAGE_SENT,
     {
-      variables: { receiverId: 29 },
+      variables: { receiverId: userData?.whoAmI?.id },
       shouldResubscribe: true,
       skip: !userData?.whoAmI?.id
     }
@@ -38,15 +32,11 @@ const Notifications = () => {
     setOpen(false)
   }
 
-  // React.useEffect(() => {
-  //   const t = messageSentData
-  //   debugger
-  // }, [messageSentData])
-  //
-  // React.useEffect(() => {
-  //   const e = error
-  //   debugger
-  // }, [error])
+  React.useEffect(() => {
+    if (messageSentData?.messageSent) {
+      setOpen(true)
+    }
+  }, [messageSentData])
 
   return (
     <Snackbar
