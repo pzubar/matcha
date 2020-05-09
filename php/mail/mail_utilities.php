@@ -1,41 +1,4 @@
 <?php
-include_once '../db_connect.php';
-include_once '../general_utilities.php';
-
-function verifyNewAccount($id) {
-    try {
-        $sqlQuery = "UPDATE users SET is_verified = true WHERE id = :id AND is_verified = false";
-        $dbh = connectToDatabase();
-        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $qres = $dbh->prepare($sqlQuery);
-        $qres->bindParam(':id',$id);
-        $qres->execute();
-    } catch (PDOException $msg) {
-        error(5.03, $msg->getMessage());
-        die();
-    }
-}
-
-function getUserData($id) {
-
-    try {
-        $sqlQuery = "SELECT * FROM users WHERE id = :id";
-        $dbh = connectToDatabase();
-        $dbh->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $qres = $dbh->prepare($sqlQuery);
-        $qres->bindParam(':id',$id);
-        $qres->execute();
-        $qres = $qres->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $msg) {
-        error(5.01, $msg->getMessage());
-        die();
-    }
-    return [
-        "address" => $qres[0]["email"],
-        "login" => $qres[0]["username"],
-        "created" => $qres[0]["created_at"]
-    ];
-}
 
 function getIdTimeLock($str) {
     $firstPcnt = strpos($str, "%");
@@ -54,3 +17,22 @@ function getIdTimeLock($str) {
     ];
 }
 
+require("../third-party/sendgrid-php/sendgrid-php.php");
+
+function mailSend($address, $content) {
+    $email = new \SendGrid\Mail\Mail();
+
+    $email->setFrom("webmaster.matcha@gmail.com", "Matcha");
+    $email->setSubject($content["title"]);
+    $email->addTo($address, "User");
+    $email->addContent("text/html", $content["msg"]);
+
+    $sendgrid = new \SendGrid(getenv('SENDGRID_API_KEY'));
+
+    try {
+        $response = $sendgrid->send($email);
+        $response->headers();
+    } catch (Exception $e) {
+        echo 'Caught exception: ' . $e->getMessage() . "\n";
+    }
+}

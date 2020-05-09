@@ -1,5 +1,7 @@
 <?php
 
+include_once '../db_utilities.php';
+
 function setKeyAndMethods($created) {
     $baseForKey = strval($created);
     $encMethod = "aes-128-ctr";
@@ -55,7 +57,7 @@ function handleLink($event, $id, $userData, $mode="encrypt") {
 
      if ($decryptionResult == $target) {
          if ($event == "Signup") {
-             verifyNewAccount($id);
+             verifyAccount($id);
              header("HTTP/1.1 200 OK");
          } elseif ($event == "Forgotten") {
              header("HTTP/1.1 200 OK");

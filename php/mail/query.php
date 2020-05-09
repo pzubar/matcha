@@ -2,6 +2,7 @@
 include "./mail_utilities.php";
 include './templates.php';
 include_once '../general_utilities.php';
+include_once '../db_utilities.php';
 
 /*
  * POST requests are used for sending emails &
@@ -56,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $content = mailDispatcher($userId, $event, $userData);
     if ($content != false) {
-        include "./mail_sender.php";
         mailSend($userData["address"], $content);
     }
 } // A decryption starts here by GET request:
