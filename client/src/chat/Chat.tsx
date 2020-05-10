@@ -23,35 +23,73 @@ interface ConversationData {
 export default () => {
   const { interlocutorId } = useParams()
   const { data: userData } = useQuery(WHO_AM_I)
+  const [sendMessage] = useMutation(SEND_MESSAGE)
+
   const {
-    subscribeToMore,
+    subscribeToMore: subscribeToMoreMessages,
     data: messagesData,
-    loading: messagesLoading,
-    error: e
+    loading: messagesLoading
   } = useQuery<MessagesData>(GET_MESSAGES)
+
   const {
+    subscribeToMore: subscribeToMoreConversations,
     data: conversationData,
-    loading: conversationLoading,
-    error: conver
+    loading: conversationLoading
   } = useQuery<ConversationData>(GET_CONVERSATION, {
     variables: { interlocutorId: Number(interlocutorId) },
     skip: !interlocutorId
   })
-  const [sendMessage, { data, loading, error }] = useMutation(SEND_MESSAGE)
-  const onMessageSend = useCallback(async (messageText: string) => {
-    await sendMessage({
-      variables: {
-        input: { message: messageText, receiverId: Number(interlocutorId) }
-      }
-    })
-  }, [])
+
+  const onMessageSend = useCallback(
+    async (messageText: string) => {
+      await sendMessage({
+        variables: {
+          input: { message: messageText, receiverId: Number(interlocutorId) }
+        }
+      })
+    },
+    [interlocutorId]
+  )
   const isLoaderShown = messagesLoading || conversationLoading
 
+  const loadMoreConversationMessages = useCallback(
+    () =>
+      subscribeToMoreConversations({
+        document: MESSAGE_SENT,
+        variables: { receiverId: userData?.whoAmI.id },
+        updateQuery: (prev, { subscriptionData }) => {
+          if (!subscriptionData.data) return prev
+          debugger
+          return [...prev.conversation, subscriptionData.data.messageSent]
+        }
+      }),
+    [subscribeToMoreConversations, userData]
+  )
+
+  const loadMoreMessages = useCallback(() => {
+    subscribeToMoreMessages({
+      document: MESSAGE_SENT,
+      variables: { receiverId: userData?.whoAmI.id },
+      updateQuery: (prev, { subscriptionData }) => {
+        if (!subscriptionData.data) return prev
+        debugger
+        return Object.assign({}, prev, {})
+      }
+    })
+  }, [subscribeToMoreMessages, userData])
+
   useEffect(() => {
-    const c = conversationData
-    const er = conver
-    debugger
-  }, [conversationData, conver])
+    if (interlocutorId && userData) {
+      debugger
+      loadMoreConversationMessages()
+    }
+  }, [userData, interlocutorId])
+
+  useEffect(() => {
+    if (userData) {
+      loadMoreMessages()
+    }
+  }, [userData])
 
   return (
     <Container>
@@ -66,19 +104,6 @@ export default () => {
           <Conversation
             interlocutorData={conversationData?.user}
             conversation={conversationData?.conversation}
-            subscribeToNewMessages={() =>
-              subscribeToMore({
-                document: MESSAGE_SENT,
-                // TODO: Make this variable dynamic somehow
-                //  also, subscribe to more may work not only with messages, but with conversation, too
-                variables: { receiverId: 28 },
-                updateQuery: (prev, { subscriptionData }) => {
-                  if (!subscriptionData.data) return prev
-                  debugger
-                  return Object.assign({}, prev, {})
-                }
-              })
-            }
           />
           <TextComposer onSend={onMessageSend} />
         </Grid>

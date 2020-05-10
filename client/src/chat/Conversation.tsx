@@ -16,13 +16,11 @@ type GroupedMessages = Array<
 interface Props {
   conversation?: Array<IMessage>
   interlocutorData?: User
-  subscribeToNewMessages: () => void
 }
 
 const Conversation = ({
   conversation,
   interlocutorData,
-  subscribeToNewMessages
 }: Props) => {
   const messages = useMemo(
     () =>
@@ -47,10 +45,6 @@ const Conversation = ({
       }, []) ?? [],
     [conversation, interlocutorData]
   )
-
-  useEffect(() => {
-    subscribeToNewMessages()
-  }, [])
 
   return (
     <div className={'conversation-block'}>
