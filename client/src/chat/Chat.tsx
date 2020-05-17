@@ -15,9 +15,14 @@ import { WHO_AM_I } from '../shared/graphql/queries'
 interface MessagesData {
   messages: Array<Message>
 }
+
 interface ConversationData {
   conversation: Array<Message>
   user: User
+}
+
+interface MessageSentData {
+  messageSent: Message
 }
 
 export default () => {
@@ -54,26 +59,35 @@ export default () => {
 
   const loadMoreConversationMessages = useCallback(
     () =>
-      subscribeToMoreConversations({
+      subscribeToMoreConversations<MessageSentData>({
         document: MESSAGE_SENT,
         variables: { receiverId: userData?.whoAmI.id },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev
-          debugger
-          return [...prev.conversation, subscriptionData.data.messageSent]
+
+          return {
+            ...prev,
+            conversation: [
+              ...prev.conversation,
+              subscriptionData.data.messageSent
+            ]
+          }
         }
       }),
     [subscribeToMoreConversations, userData]
   )
 
   const loadMoreMessages = useCallback(() => {
-    subscribeToMoreMessages({
+    subscribeToMoreMessages<MessageSentData>({
       document: MESSAGE_SENT,
       variables: { receiverId: userData?.whoAmI.id },
       updateQuery: (prev, { subscriptionData }) => {
         if (!subscriptionData.data) return prev
-        debugger
-        return Object.assign({}, prev, {})
+
+        return {
+          ...prev,
+          messages: [...prev.messages, subscriptionData.data.messageSent]
+        }
       }
     })
   }, [subscribeToMoreMessages, userData])
@@ -105,7 +119,7 @@ export default () => {
             interlocutorData={conversationData?.user}
             conversation={conversationData?.conversation}
           />
-          <TextComposer onSend={onMessageSend} />
+          {conversationData?.user && <TextComposer onSend={onMessageSend} />}
         </Grid>
       </Grid>
     </Container>

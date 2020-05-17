@@ -75,7 +75,9 @@ export class MessagesResolver {
         message,
         receiverId,
         interlocutorName: user.username,
+        // TODO: Leave one
         interlocutorId: user.id,
+        senderId: user.id,
         createdAt
       }
       pubSub
